@@ -144,6 +144,45 @@ git branch -a
 
 ---
 
+## দরকারি দেখার Command (যেকোনো সময় চালানো যায়, কিছু বদলায় না)
+
+| Command | কী দেখায় |
+|---|---|
+| `git status` | কোন ফাইল বদলেছে, কোনটা staged (add করা), কোনটা untracked |
+| `git log --oneline` | commit-এর ইতিহাস, প্রতিটা এক লাইনে (hash + message) |
+| `git log --oneline --graph --all` | সব branch সহ commit-এর গাছ (কোন branch কোথায় আলাদা হলো দেখা যায়) |
+| `git log --oneline -5` | শেষ ৫টা commit |
+| `git branch` | local branch-এর তালিকা (`*` চিহ্ন = এখন যে branch-এ আছ) |
+| `git branch -vv` | প্রতিটা branch কোন commit-এ আছে আর GitHub-এর কোন branch-কে track করছে |
+| `git branch -a` | local + GitHub (remote) সব branch |
+| `git remote -v` | GitHub-এর কোন URL-এর সাথে যুক্ত আছ |
+| `git diff` | commit-এর আগে, ফাইলে ঠিক কী কী লাইন বদলেছে |
+| `git diff --staged` | `git add` করা বদলগুলো কী কী |
+| `git show <hash>` | একটা নির্দিষ্ট commit-এ কী বদলেছিল |
+
+> **টিপ:** commit করার আগে `git status` আর `git diff` দেখে নাও, push করার পর `git log --oneline` দিয়ে যাচাই করো commit ঠিকমতো হয়েছে কিনা।
+
+### `git log --oneline`-এর output পড়ার নিয়ম
+```
+4ada10a add one docs
+81d4d30 docs: add claude.md and .gitignore
+```
+- বামে হলো commit-এর **hash** (ছোট ID), ডানে **message**
+- সবচেয়ে ওপরে **নতুন** commit, নিচে পুরোনো
+
+---
+
+## ভুল শুধরানোর Command
+
+| পরিস্থিতি | Command |
+|---|---|
+| `git add` করেছি, কিন্তু commit-এ চাই না | `git restore --staged <file>` |
+| ফাইলের বদল বাতিল করে আগের অবস্থায় ফিরতে চাই | `git restore <file>` (সাবধান: বদল হারিয়ে যাবে) |
+| শেষ commit-এর message ভুল (এখনো push করিনি) | `git commit --amend -m "নতুন message"` |
+| অর্ধেক কাজ রেখে অন্য branch-এ যেতে হবে | `git stash`, পরে ফিরে `git stash pop` |
+
+---
+
 ## দ্রুত Cheat Sheet
 
 ```bash
