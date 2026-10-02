@@ -1,0 +1,1 @@
+Image 1-এর মতো banner আসার পর Phase 1 শেষ হলে PR বানিয়ে main-এ merge করবে। তারপর feature/rag branch দিয়ে Phase 2 শুরু করো।
