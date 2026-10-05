@@ -14,7 +14,54 @@ def main():
             print("Goodbye!")
             break
 
+        # Handle special commands
+        if user_input.startswith("/"):
+            parts = user_input.split()
+            cmd = parts[0].lower()
+
+            if cmd == "/state":
+                state = chatbot.get_state(config)
+                print(f"\n--- Current State ---")
+                print(f"Checkpoint ID: {state.config['configurable'].get('checkpoint_id')}")
+                print(f"Next Node: {state.next}")
+                print(f"Messages: {len(state.values.get('messages', []))}")
+                print(f"Content: {state.values.get('messages', [])[-1].content if state.values.get('messages') else 'None'}")
+                continue
+
+            elif cmd == "/history":
+                print(f"\n--- Conversation History ---")
+                history = list(chatbot.get_state_history(config))
+                for i, state in enumerate(history):
+                    cid = state.config['configurable'].get('checkpoint_id', 'N/A')
+                    msg_count = len(state.values.get('messages', []))
+                    print(f"[{i}] ID: {cid[:8]}... | Next: {state.next} | Msgs: {msg_count}")
+                if not history:
+                    print("No history found.")
+                continue
+
+            elif cmd == "/replay":
+                if len(parts) < 2:
+                    print("Usage: /replay <number>")
+                    continue
+                try:
+                    idx = int(parts[1])
+                    history = list(chatbot.get_state_history(config))
+                    if 0 <= idx < len(history):
+                        target_state = history[idx]
+                        # Replay from this checkpoint
+                        replay_config = target_state.config
+                        chatbot.invoke(None, config=replay_config)
+                        # Update current session config to this checkpoint
+                        config = replay_config
+                        print(f"Rewound to checkpoint [{idx}]. Conversation reset to that point.")
+                    else:
+                        print(f"Invalid index. Please choose 0 to {len(history)-1}.")
+                except ValueError:
+                    print("Please provide a valid number for the checkpoint index.")
+                continue
+
         try:
+
             # Invoke the chatbot with the user message and the thread config
             response = chatbot.invoke(
                 {"messages": [HumanMessage(content=user_input)]},
